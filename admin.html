@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kabaadi Wala — Admin Dashboard</title>
+<meta name="robots" content="noindex, nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0f12;--panel:#15181d;--panel2:#1c2026;--line:rgba(255,255,255,.09);--txt:#f2efe8;--mut:#9aa0a8;--cop:#c0793a;--grn:#3fa46f;--red:#d05a5a;--amber:#d9a441}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+a{color:inherit}.wrap{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+aside{background:#101317;border-right:1px solid var(--line);padding:24px 16px;position:sticky;top:0;height:100vh;overflow:auto}
+.brand{display:flex;gap:10px;align-items:center;margin-bottom:22px}
+.brand .m{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,#c0793a,#6e4420);display:grid;place-items:center;font-family:Fraunces,serif;font-weight:800;font-size:20px}
+.brand b{font-family:Fraunces,serif;font-size:18px}.brand small{color:var(--cop);font-size:10px;letter-spacing:.2em;font-weight:800}
+.tab{display:flex;gap:10px;align-items:center;width:100%;background:none;border:0;color:var(--mut);padding:12px 14px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;text-align:left;font-family:inherit}
+.tab:hover{background:rgba(255,255,255,.05);color:#fff}.tab.on{background:rgba(192,121,58,.16);color:#f3c98a;outline:1px solid rgba(192,121,58,.4)}
+main{padding:28px;max-width:1180px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:22px;flex-wrap:wrap}
+.top h1{font-family:Fraunces,serif;font-size:30px}.top p{color:var(--mut);font-size:14px}
+.btn{background:var(--cop);color:#fff;border:0;border-radius:10px;padding:11px 18px;font-weight:700;cursor:pointer;font-size:14px}
+.btn.ghost{background:rgba(255,255,255,.08);border:1px solid var(--line)}
+.btn.danger{background:rgba(208,90,90,.15);color:#ef9a9a;border:1px solid rgba(208,90,90,.4)}
+.btn.sm{padding:7px 12px;font-size:12.5px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
+.card b{font-size:32px;font-family:Fraunces,serif;color:#eec48d}.card span{color:var(--mut);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px;margin-bottom:18px}
+.panel h2{font-family:Fraunces,serif;font-size:21px;margin-bottom:4px}.panel>p{color:var(--mut);font-size:13.5px;margin-bottom:16px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;color:var(--mut);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;padding:10px;border-bottom:1px solid var(--line)}
+td{padding:11px 10px;border-bottom:1px solid rgba(255,255,255,.05);vertical-align:top}
+tr:hover td{background:rgba(255,255,255,.02)}
+.badge{display:inline-block;padding:4px 11px;border-radius:999px;font-size:12px;font-weight:700}
+.b-New{background:rgba(217,164,65,.15);color:#eec27a}.b-Contacted,.b-Quote{background:rgba(90,140,255,.15);color:#9db9ff}
+.b-Sent,.b-Pickup{background:rgba(150,110,255,.16);color:#c3aefc}.b-Collected,.b-Quoted{background:rgba(63,164,111,.15);color:#8fd6a8}
+.b-Completed{background:rgba(63,164,111,.25);color:#b9e8c9}.b-Cancelled{background:rgba(208,90,90,.15);color:#ef9a9a}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:12.5px;font-weight:700;color:var(--mut);display:block;margin:10px 0 5px}
+input,select,textarea{width:100%;background:#0f1216;border:1px solid var(--line);color:#fff;border-radius:10px;padding:11px 12px;font-size:14px;font-family:inherit;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--cop)}select option{color:#111}
+.hidden{display:none!important}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}
+.login .box{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:40px;width:100%;max-width:400px;text-align:center}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.search{background:#0f1216;border:1px solid var(--line);border-radius:10px;padding:10px 14px;color:#fff;min-width:220px}
+.scrollx{overflow-x:auto}
+.note{font-size:12.5px;color:var(--mut);background:rgba(217,164,65,.08);border:1px solid rgba(217,164,65,.3);border-radius:10px;padding:10px 14px;margin-bottom:14px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}aside{position:static;height:auto}.cards{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}main{padding:18px}}
+</style>
+</head>
+<body>
+<!-- LOGIN -->
+<div class="login" id="loginView">
+  <div class="box">
+    <div class="brand" style="justify-content:center"><div class="m">K</div><div style="text-align:left"><b>Kabaadi Wala</b><br><small>ADMIN CONSOLE</small></div></div>
+    <h2 style="font-family:Fraunces,serif;margin:14px 0 6px">Restricted Access</h2>
+    <p style="color:var(--mut);font-size:13.5px;margin-bottom:18px">Demo credentials — username <b>admin</b> · password <b>kabaadi2026</b><br>Change these in production backend auth.</p>
+    <input id="u" placeholder="Username" autocomplete="username" style="margin-bottom:10px">
+    <input id="p" type="password" placeholder="Password" autocomplete="current-password">
+    <button class="btn" style="width:100%;margin-top:14px" onclick="Admin.login()">Sign In →</button>
+    <p id="loginErr" style="color:#ef9a9a;font-size:13px;margin-top:10px"></p>
+    <a href="index.html" style="display:block;margin-top:14px;color:var(--mut);font-size:13px">← Back to website</a>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="wrap hidden" id="appView">
+  <aside>
+    <div class="brand"><div class="m">K</div><div><b>Kabaadi Wala</b><br><small>ADMIN CONSOLE</small></div></div>
+    <button class="tab on" data-t="dash">📊 Dashboard</button>
+    <button class="tab" data-t="pickups">📦 Pickup Requests <span id="bdPick" class="badge b-New" style="margin-left:auto"></span></button>
+    <button class="tab" data-t="quotes">💬 Quotes <span id="bdQuo" class="badge b-Quote" style="margin-left:auto"></span></button>
+    <button class="tab" data-t="materials">♻ Materials</button>
+    <button class="tab" data-t="customers">👥 Customers</button>
+    <button class="tab" data-t="b2b">🏭 Business (B2B)</button>
+    <button class="tab" data-t="testis">⭐ Testimonials</button>
+    <button class="tab" data-t="faqs">❓ FAQs</button>
+    <button class="tab" data-t="areas">📍 Service Areas</button>
+    <button class="tab" data-t="settings">⚙ Website Settings</button>
+    <div style="margin-top:18px;display:grid;gap:8px">
+      <button class="btn ghost sm" onclick="Admin.exportDb()">Export Data (JSON)</button>
+      <button class="btn ghost sm" onclick="Admin.logout()">Sign Out</button>
+      <a href="index.html" style="text-align:center;color:var(--mut);font-size:13px;margin-top:6px">← View Website</a>
+    </div>
+  </aside>
+  <main>
+    <div class="top"><div><h1 id="pageTitle">Dashboard</h1><p>Bikaner, Rajasthan, India · <span id="today"></span></p></div>
+    <button class="btn ghost" onclick="Admin.resetDemo()">Reset demo data</button></div>
+    <div id="view"></div>
+  </main>
+</div>
+
+<script src="js/store.js"></script>
+<script src="js/api.js"></script>
+<script>
+const Admin={
+  tab:'dash', authed:sessionStorage.getItem('kw_admin')==='1',
+  init(){
+    document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{this.tab=b.dataset.t;this.render();document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));});
+    document.getElementById('today').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    if(this.authed){this.show(!!(window.KWAPI&&KWAPI.token));} 
+    const p=document.getElementById('p'); p&&p.addEventListener('keydown',e=>{if(e.key==='Enter')this.login();});
+  },
+  async login(){
+    const u=document.getElementById('u').value.trim(), p=document.getElementById('p').value;
+    document.getElementById('loginErr').textContent='';
+    /* Prefer the real backend (JWT + bcrypt). Fall back to offline demo mode. */
+    if(window.KWAPI){
+      try{ await KWAPI.login(u,p); sessionStorage.setItem('kw_admin','1'); this.authed=true; this.show(true); return; }
+      catch(e){ if(e && e.status===401){ document.getElementById('loginErr').textContent='Invalid credentials.'; return; } /* unreachable → offline fallback below */ }
+    }
+    if(u==='admin'&&p==='kabaadi2026'){sessionStorage.setItem('kw_admin','1');this.authed=true;this.show(false);}
+    else document.getElementById('loginErr').textContent='Invalid credentials. Try admin / kabaadi2026.';
+  },
+  logout(){sessionStorage.removeItem('kw_admin'); if(window.KWAPI)KWAPI.logout(); location.reload();},
+  async show(online){
+    document.getElementById('loginView').classList.add('hidden');document.getElementById('appView').classList.remove('hidden');
+    if(online&&window.KWAPI){ try{ await KWAPI.pullAdmin(); }catch(e){} }
+    if(!online&&window.KWAPI&&!KWAPI.online){ const n=document.createElement('div'); n.className='note'; n.style.margin='0 0 14px'; n.textContent='⚠ Backend unreachable — running in offline demo mode (localStorage). Start the API with: cd backend && npm start'; document.querySelector('#appView main').prepend(n); }
+    this.render();
+  },
+  badge(v,map){return `<span class="badge b-${(v||'New').split(' ')[0]}">${v}</span>`;},
+  esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));},
+  render(){
+    const DB=KWDB, v=document.getElementById('view');
+    const news=DB.pickups().filter(p=>p.status==='New').length, newq=DB.quotes().filter(q=>q.status==='New').length;
+    document.getElementById('bdPick').textContent=news||''; document.getElementById('bdQuo').textContent=newq||'';
+    const T={dash:'Dashboard',pickups:'Pickup Requests',quotes:'Quote Management',materials:'Scrap Materials',customers:'Customers',b2b:'Business Customers',testis:'Testimonials',faqs:'FAQs',areas:'Service Areas',settings:'Website Settings'};
+    document.getElementById('pageTitle').textContent=T[this.tab];
+    if(this.tab==='dash'){
+      const P=DB.pickups(),Q=DB.quotes();
+      v.innerHTML=`<div class="cards">
+        <div class="card"><b>${P.length}</b><br><span>Pickup Requests</span></div>
+        <div class="card"><b>${Q.length}</b><br><span>Quote Requests</span></div>
+        <div class="card"><b>${DB.all().customers.length}</b><br><span>Customers</span></div>
+        <div class="card"><b>${DB.materialsAll().length}</b><br><span>Materials Live</span></div></div>
+        <div class="panel"><h2>Latest pickup requests</h2><p>Newest first. Update status as you contact each customer.</p><div class="scrollx"><table><tr><th>Ref</th><th>Customer</th><th>Material</th><th>Status</th><th>Date</th></tr>
+        ${P.slice(0,5).map(p=>`<tr><td>#${p.id.toUpperCase()}</td><td><b>${this.esc(p.name)}</b><br><small style="color:var(--mut)">${this.esc(p.phone)} · ${this.esc(p.area)}</small></td><td>${this.esc(p.category)}<br><small style="color:var(--mut)">${this.esc(p.quantity)}</small></td><td>${this.badge(p.status)}</td><td><small>${(p.date||'—')} ${this.esc(p.time||'')}</small></td></tr>`).join('')||'<tr><td colspan=5>No requests yet — submit one from the website form.</td></tr>'}</table></div></div>
+        <div class="note">⚠ Statistics on the public site (years, customers, tonnage) are placeholders. Update real figures under <b>Website Settings</b> before presenting them as claims.</div>`;
+    }
+    if(this.tab==='pickups'){
+      const P=DB.pickups();
+      v.innerHTML=`<div class="panel"><h2>Pickup Requests (${P.length})</h2><p>Click a status to advance it. Photos listed by filename (wire backend file storage in production).</p>
+      <div class="toolbar"><input class="search" id="q" placeholder="Search name / phone / area…" oninput="Admin.render()"></div><div class="scrollx"><table>
+      <tr><th>Customer</th><th>Address</th><th>Material / Qty</th><th>Slot</th><th>Photos / Notes</th><th>Status</th><th></th></tr>
+      ${P.filter(p=>{const q=(document.getElementById('q')?.value||'').toLowerCase();return !q||(p.name+p.phone+p.area+p.category).toLowerCase().includes(q);}).map(p=>`<tr>
+        <td><b>${this.esc(p.name)}</b><br><small>${this.esc(p.phone)}</small><br><small style="color:var(--mut)">#${p.id.toUpperCase()}</small></td>
+        <td><small>${this.esc(p.address)}<br>${this.esc(p.area)}</small></td>
+        <td><b>${this.esc(p.category)}</b><br><small>${this.esc(p.quantity)}</small></td>
+        <td><small>${this.esc(p.date||'—')}<br>${this.esc(p.time||'')}</small></td>
+        <td><small>${(p.photos||[]).join(', ')||'—'}<br>${this.esc(p.notes||'')}</small></td>
+        <td><select onchange="KWDB.setPickupStatus('${p.id}',this.value);Admin.render()" style="min-width:140px">${['New','Contacted','Quote Sent','Pickup Scheduled','Collected','Completed','Cancelled'].map(s=>`<option ${p.status===s?'selected':''}>${s}</option>`).join('')}</select></td>
+        <td><button class="btn danger sm" onclick="if(confirm('Delete?')){KWDB.delPickup('${p.id}');Admin.render()}">✕</button></td></tr>`).join('')||'<tr><td colspan=7>No requests found.</td></tr>'}</table></div></div>`;
+      const q=document.getElementById('q'); if(q){q.focus();q.setSelectionRange(q.value.length,q.value.length);}
+    }
+    if(this.tab==='quotes'){
+      const Q=DB.quotes();
+      v.innerHTML=`<div class="panel"><h2>Quote Requests (${Q.length})</h2><p>Review, add a quoted price + notes, change status, then contact the customer. Never show fake live prices publicly.</p>
+      <div class="scrollx"><table><tr><th>Material</th><th>Qty / Location</th><th>Quoted Price</th><th>Notes</th><th>Status</th><th>Contact</th><th></th></tr>
+      ${Q.map(q=>{const ph=String(q.phone||'').replace(/\D/g,'');
+        const msg=encodeURIComponent(`Hello ${q.phone?'':''}Kabaadi Wala here — regarding your scrap quote request #${String(q.id).toUpperCase()} (${q.material}, ${q.quantity}): ${q.price?('our quote is '+q.price+'.'):''} Please confirm.`);
+        return `<tr><td><b>${this.esc(q.material)}</b><br><small style="color:var(--mut)">${new Date(q.createdAt).toLocaleString('en-IN')}</small><br><small style="color:var(--mut)">#${this.esc(String(q.id).toUpperCase())}</small></td>
+      <td><small>${this.esc(q.quantity)} · ${this.esc(q.location)}<br>${this.esc(q.phone||'no phone')}<br>${(q.photos||[]).map(p=>this.esc(p)).join(', ')}</small></td>
+      <td><input value="${this.esc(q.price||'')}" placeholder="₹ …" onchange="KWDB.setQuote('${q.id}',{price:this.value});" style="min-width:120px"></td>
+      <td><textarea rows="2" placeholder="Internal / customer notes…" onchange="KWDB.setQuote('${q.id}',{notes:this.value});" style="min-width:150px">${this.esc(q.notes||'')}</textarea></td>
+      <td><select onchange="KWDB.setQuote('${q.id}',{status:this.value});Admin.render()">${['New','Contacted','Quoted','Accepted','Rejected'].map(s=>`<option ${q.status===s?'selected':''}>${s}</option>`).join('')}</select></td>
+      <td style="white-space:nowrap">${ph?`<a class="btn ghost sm" href="tel:+${ph}">Call</a> <a class="btn ghost sm" target="_blank" rel="noopener" href="https://wa.me/${ph}?text=${msg}">WhatsApp</a>`:'<small style="color:var(--mut)">—</small>'}</td>
+      <td><button class="btn danger sm" onclick="if(confirm('Delete?')){KWDB.delQuote('${q.id}');Admin.render()}">✕</button></td></tr>`;}).join('')||'<tr><td colspan=7>No quote requests yet.</td></tr>'}</table></div></div>`;
+    }
+    if(this.tab==='materials'){
+      const M=DB.materialsAll();
+      const em=this.editingMat?M.find(x=>x.id===this.editingMat):null;
+      v.innerHTML=`<div class="panel"><h2>Materials (${M.length})</h2><p>These cards render live on the homepage.</p>
+      <div class="grid2">
+        <div><h3 style="font-family:Fraunces,serif">${em?'Edit Material':'Add Material'}</h3><label>Name</label><input id="mName" placeholder="e.g. Copper" value="${this.esc(em?.name||'')}"><label>Category</label><input id="mCat" placeholder="e.g. Non-Ferrous Metals" value="${this.esc(em?.cat||'')}"><label>Image URL</label><input id="mImg" placeholder="https://…" value="${this.esc(em?.img||'')}"><label>Description</label><textarea id="mDesc" rows="2">${this.esc(em?.desc||'')}</textarea><label>Tags (comma separated)</label><input id="mTags" placeholder="Wire, Coils, Pipes" value="${this.esc((em?.tags||[]).join(', '))}"><label><input type="checkbox" id="mAct" ${!em||em.active!==false?'checked':''} style="width:auto"> Active</label><br><br><button class="btn" onclick="Admin.saveMat()">${em?'Save Changes':' + Add Material'}</button> ${em?'<button class="btn ghost" onclick="Admin.editingMat=null;Admin.render()">Cancel</button>':''}</div>
+        <div>${M.map(m=>`<div style="border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;display:flex;gap:12px;align-items:center"><img src="${m.img}" onerror="this.style.display='none'" style="width:64px;height:64px;object-fit:cover;border-radius:10px"><div style="flex:1"><b>${this.esc(m.name)}</b> <small style="color:var(--mut)">· ${this.esc(m.cat)} · ${m.active?'Active':'Hidden'}</small><br><small style="color:var(--mut)">${this.esc((m.tags||[]).join(', '))}</small></div><button class="btn ghost sm" onclick="Admin.editingMat='${m.id}';Admin.render()">Edit</button><button class="btn ghost sm" onclick="Admin.toggleMat('${m.id}')">${m.active?'Hide':'Show'}</button><button class="btn danger sm" onclick="if(confirm('Delete material?')){KWDB.delMaterial('${m.id}');Admin.render()}">✕</button></div>`).join('')}</div>
+      </div></div>`;
+    }
+    if(this.tab==='customers'){
+      const C=DB.all().customers;
+      v.innerHTML=`<div class="panel"><h2>Customers (${C.length})</h2><p>Auto-built from pickup requests. Full CRM sync can be added with the backend.</p><div class="scrollx"><table><tr><th>Name</th><th>Phone</th><th>Address</th><th>Requests</th><th>Last</th></tr>${C.map(c=>`<tr><td><b>${this.esc(c.name)}</b></td><td>${this.esc(c.phone)}</td><td><small>${this.esc(c.address||'')}</small></td><td>${c.requests||1}</td><td><small>${c.lastAt?new Date(c.lastAt).toLocaleDateString('en-IN'):'—'}</small></td></tr>`).join('')||'<tr><td colspan=5>No customers yet.</td></tr>'}</table></div></div>`;
+    }
+    if(this.tab==='b2b'){
+      const B=DB.all().b2b;
+      v.innerHTML=`<div class="panel"><h2>Business Enquiries (${B.length})</h2><p>Separate B2B pipeline.</p><div class="scrollx"><table><tr><th>Company</th><th>Phone / Type</th><th>Details</th><th>Received</th></tr>${B.map(b=>`<tr><td><b>${this.esc(b.name)}</b></td><td><small>${this.esc(b.phone)} · ${this.esc(b.type||'')}</small></td><td><small>${this.esc(b.notes||'')}</small></td><td><small>${new Date(b.createdAt).toLocaleString('en-IN')}</small></td></tr>`).join('')||'<tr><td colspan=4>No B2B enquiries yet.</td></tr>'}</table></div></div>`;
+    }
+    if(this.tab==='testis'){
+      const T2=DB.testimonialsAll();
+      const et=this.editingTesti?T2.find(x=>x.id===this.editingTesti):null;
+      v.innerHTML=`<div class="panel"><h2>Testimonials</h2><p>Mark genuine reviews active only. Placeholders are labelled on the site.</p>
+      <div class="grid2"><div><h3 style="font-family:Fraunces,serif">${et?'Edit Testimonial':'Add Testimonial'}</h3><label>Name</label><input id="tName" value="${this.esc(et?.name||'')}"><label>Role</label><input id="tRole" placeholder="Residential Customer · Bikaner" value="${this.esc(et?.role||'')}"><label>Stars (1-5)</label><input id="tStars" type="number" min="1" max="5" value="${et?.stars||5}"><label>Review</label><textarea id="tText" rows="3">${this.esc(et?.text||'')}</textarea><br><button class="btn" onclick="Admin.saveTesti()">${et?'Save Changes':'+ Add Testimonial'}</button> ${et?'<button class="btn ghost" onclick="Admin.editingTesti=null;Admin.render()">Cancel</button>':''}</div>
+      <div>${T2.map(t=>`<div style="border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px"><b>${this.esc(t.name)}</b> <small style="color:var(--mut)">· ${'★'.repeat(t.stars)} · ${t.active?'Active':'Hidden'}</small><p style="font-size:13px;color:var(--mut)">${this.esc(t.text)}</p><button class="btn ghost sm" onclick="Admin.editingTesti='${t.id}';Admin.render()">Edit</button> <button class="btn ghost sm" onclick='KWDB.upsertTesti({id:"${t.id}",active:${!t.active}});Admin.render()'>${t.active?'Hide':'Show'}</button> <button class="btn danger sm" onclick="if(confirm('Delete?')){KWDB.delTesti('${t.id}');Admin.render()}">✕</button></div>`).join('')}</div></div></div>`;
+    }
+    if(this.tab==='faqs'){
+      const F=DB.faqsAll();
+      const ef=this.editingFaq?F.find(x=>x.id===this.editingFaq):null;
+      v.innerHTML=`<div class="panel"><h2>FAQs</h2><p>Edits update the homepage accordion instantly.</p>
+      <div class="grid2"><div><h3 style="font-family:Fraunces,serif">${ef?'Edit FAQ':'Add FAQ'}</h3><label>Question</label><input id="fQ" value="${this.esc(ef?.q||'')}"><label>Answer</label><textarea id="fA" rows="3">${this.esc(ef?.a||'')}</textarea><br><button class="btn" onclick="Admin.saveFaq()">${ef?'Save Changes':'+ Add FAQ'}</button> ${ef?'<button class="btn ghost" onclick="Admin.editingFaq=null;Admin.render()">Cancel</button>':''}</div>
+      <div>${F.map(f=>`<div style="border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px"><b>${this.esc(f.q)}</b> <small style="color:var(--mut)">· ${f.active?'Active':'Hidden'}</small><p style="font-size:13px;color:var(--mut)">${this.esc(f.a)}</p><button class="btn ghost sm" onclick="Admin.editingFaq='${f.id}';Admin.render()">Edit</button> <button class="btn ghost sm" onclick='KWDB.upsertFaq({id:"${f.id}",active:${!f.active}});Admin.render()'>${f.active?'Hide':'Show'}</button> <button class="btn danger sm" onclick="if(confirm('Delete?')){KWDB.delFaq('${f.id}');Admin.render()}">✕</button></div>`).join('')}</div></div></div>`;
+    }
+    if(this.tab==='areas'){
+      v.innerHTML=`<div class="panel"><h2>Service Areas</h2><p>One per line. Shown as pills + used nowhere else.</p><textarea id="areasBox" rows="10">${this.esc(DB.areas().join('\n'))}</textarea><br><br><button class="btn" onclick="Admin.saveAreas()">Save Areas</button></div>`;
+    }
+    if(this.tab==='settings'){
+      const s=DB.settings();
+      v.innerHTML=`<div class="note">⚠ Phone / WhatsApp / Email are empty by default — nothing invented. Fill them here and the whole site (call buttons, WhatsApp float, contact section) updates. Use full international format for WhatsApp, e.g. <b>919876543210</b>.</div>
+      <div class="panel"><h2>Website Settings</h2><p>Business identity, contact, hero text, statistics and map.</p><div class="grid2">
+      ${[['businessName','Business Name'],['tagline','Tagline'],['phone','Phone (digits)'],['whatsapp','WhatsApp (e.g. 919876543210)'],['email','Email'],['address','Address'],['hours','Business Hours'],['heroTitle','Hero Title'],['heroSub','Hero Subtitle'],['statYears','Stat — Years'],['statCustomers','Stat — Customers'],['statBusiness','Stat — Businesses'],['statTonnes','Stat — Tonnes'],['logoUrl','Logo Image URL'],['socialFacebook','Facebook URL'],['socialInstagram','Instagram URL'],['socialX','X (Twitter) URL'],['socialYoutube','YouTube URL'],['seoTitle','SEO Title'],['seoDescription','SEO Description']].map(([k,l])=>`<div><label>${l}</label><input id="s_${k}" value="${this.esc(s[k]||'')}"></div>`).join('')}
+      </div><label>Google Maps Embed URL (iframe src)</label><input id="s_mapEmbed" value="${this.esc(s.mapEmbed||'')}">
+      <br><br><button class="btn" onclick="Admin.saveSettings()">Save Settings</button> <span id="sOk" style="color:#8fd6a8;font-size:13px;margin-left:10px"></span></div>
+      <div class="panel"><h2>Change Admin Password</h2><p>${window.KWAPI&&KWAPI.token?'Signed in via API — changing here updates the server account.':'Available when signed in through the backend API (not in offline demo mode).'}</p>
+      <div class="grid2"><div><label>Current Password</label><input id="pwCur" type="password"></div><div><label>New Password (min 8 chars)</label><input id="pwNext" type="password"></div></div>
+      <br><button class="btn ghost" onclick="Admin.changePw()">Update Password</button> <span id="pwOk" style="font-size:13px;margin-left:10px"></span></div>`;
+    }
+  },
+  saveMat(){const g=id=>document.getElementById(id).value.trim();if(!g('mName'))return alert('Material name is required.');KWDB.upsertMaterial({id:this.editingMat||undefined,name:g('mName'),cat:g('mCat')||'General',img:g('mImg')||'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=800&auto=format&fit=crop',desc:g('mDesc')||'',tags:g('mTags').split(',').map(s=>s.trim()).filter(Boolean),active:document.getElementById('mAct').checked});this.editingMat=null;this.render();},
+  toggleMat(id){const m=KWDB.materialsAll().find(x=>x.id===id);KWDB.upsertMaterial({id,active:!m.active});this.render();},
+  saveTesti(){const g=id=>document.getElementById(id).value.trim();if(!g('tName')||!g('tText'))return alert('Add name and review.');KWDB.upsertTesti({id:this.editingTesti||undefined,name:g('tName'),role:g('tRole'),stars:+document.getElementById('tStars').value||5,text:g('tText')});this.editingTesti=null;this.render();},
+  saveFaq(){const g=id=>document.getElementById(id).value.trim();if(!g('fQ')||!g('fA'))return alert('Add question and answer.');KWDB.upsertFaq({id:this.editingFaq||undefined,q:g('fQ'),a:g('fA')});this.editingFaq=null;this.render();},
+  saveAreas(){KWDB.setAreas(document.getElementById('areasBox').value.split('\n').map(s=>s.trim()).filter(Boolean));alert('Service areas saved.');},
+  saveSettings(){const o={};document.querySelectorAll('[id^="s_"]').forEach(i=>o[i.id.slice(2)]=i.value.trim());KWDB.saveSettings(o);document.getElementById('sOk').textContent='✓ Saved — homepage updated.';},
+  async changePw(){
+    const c=document.getElementById('pwCur').value, n=document.getElementById('pwNext').value, ok=document.getElementById('pwOk');
+    if(!(window.KWAPI&&KWAPI.token)){ok.style.color='#eec27a';ok.textContent='Sign in via the backend API first.';return;}
+    try{ await KWAPI.changePassword(c,n); ok.style.color='#8fd6a8'; ok.textContent='✓ Password updated.'; document.getElementById('pwCur').value='';document.getElementById('pwNext').value=''; }
+    catch(e){ ok.style.color='#ef9a9a'; ok.textContent=e.message||'Failed.'; }
+  },
+  exportDb(){const b=new Blob([KWDB.export()],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='kabaadiwala-data.json';a.click();},
+  resetDemo(){if(confirm('Reset all demo data?')){KWDB.reset();this.render();}}
+};
+Admin.init();
+</script>
+</body>
+</html>
